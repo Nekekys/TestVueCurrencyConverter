@@ -1,5 +1,8 @@
 <template>
-    <input :value="modelValue" @input="updateInput" class="input" type="text" :placeholder="placeholder" autofocus >
+    <select :value="modelValue" @input="updateInput" name="language" class="input">
+        <option disabled value="">Выберите валюту</option>
+        <option v-for="currency in $props.currencies" :key="currency" :value="currency" selected="selected">{{currency}}</option>
+    </select>
 </template>
 
 <script>
@@ -7,6 +10,7 @@
         name: "my-input",
         props: {
             modelValue: [String, Number],
+            currencies: Array,
             placeholder: String
         },
         methods: {
@@ -22,7 +26,7 @@
         background-color: transparent;
 
         padding: 3% 6%;
-        width: 88%;
+        width: 100%;
         border: none;
 
         font-family: 'Fira Sans', sans-serif;
@@ -36,10 +40,5 @@
     }
     .input::placeholder  {
         color: #656EC2;
-    }
-    .input::-webkit-outer-spin-button,
-    .input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
     }
 </style>

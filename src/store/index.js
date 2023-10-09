@@ -3,17 +3,19 @@ import axios from "axios";
 
 export default createStore({
   state: ()=>({
-    jokes: [],
-    isLoading: false
+    currencies: {},
+    isLoading: false,
+    isError: false,
+    defaultCurrency: ''
   }),
   getters: {
-    countJokes(state){
-      return state.jokes.length
+    currenciesList(state){
+      return Object.keys(state.currencies)
     }
   },
   mutations: {
-    setJokes(state, jokes){
-      state.jokes = jokes
+    setCurrencies(state, currencies){
+      state.currencies = currencies
     },
     startLoading(state){
       state.isLoading = true
@@ -21,18 +23,28 @@ export default createStore({
     endLoading(state){
       state.isLoading = false
     },
+    setError(state){
+      state.isError = false
+    },
+    setDefaultCurrency(state, payload){
+      state.defaultCurrency = payload
+    },
   },
   actions: {
-    getJokes (context, query) {
+    getCurrencies (context) {
       context.commit('startLoading')
       axios({
         method: 'get',
-        url: `https://api.chucknorris.io/jokes/search?query=${query}`,
+        url: `https://www.cbr-xml-daily.ru/latest.js`,
       }).then(res => {
-        context.commit('setJokes', res.data.result)
+        context.commit('setCurrencies', res.data.rates)
       }).catch(e => {
         console.log(e)
+        context.commit('setError')
       }).finally(()=>{
+        if(localStorage.getItem('currency')){
+          context.commit('setDefaultCurrency', localStorage.getItem('currency'))
+        }
         context.commit('endLoading')
       })
     }
